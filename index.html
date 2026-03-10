@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Green-Step Dashboard | Digital Forest Restoration</title>
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+            --secondary-dark: #1e8449;
+            --bg-light: #f4f7f6;
+            --text-dark: #2c3e50;
+            --card-bg: #ffffff;
+            --shadow: 0 10px 30px rgba(0,0,0,0.08);
+            --transition: all 0.3s ease;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Poppins', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-light);
+            margin: 0;
+            padding: 0;
+            color: var(--text-dark);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Header Styling */
+        header {
+            background: var(--primary-gradient);
+            color: white;
+            width: 100%;
+            padding: 40px 20px;
+            text-align: center;
+            border-bottom-left-radius: 50px;
+            border-bottom-right-radius: 50px;
+            box-shadow: var(--shadow);
+            margin-bottom: 40px;
+        }
+
+        header h1 { margin: 0; font-size: 2.5em; font-weight: 700; }
+        header p { margin: 10px 0 0; opacity: 0.9; font-size: 1.1em; }
+
+        .main-container {
+            width: 90%;
+            max-width: 1200px;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+            padding-bottom: 50px;
+        }
+
+        @media (min-width: 992px) {
+            .main-container { grid-template-columns: 350px 1fr; }
+        }
+
+        /* Card Styling General */
+        .card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .card:hover { transform: translateY(-5px); }
+
+        .card-title {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: var(--secondary-dark);
+            margin-top: 0;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Input Panel Styling */
+        .input-panel { position: sticky; top: 30px; height: fit-content; }
+
+        .form-group { margin-bottom: 18px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 500; font-size: 0.9em; }
+        
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
+            border-radius: 10px;
+            border: 2px solid #e0e0e0;
+            background-color: #f9f9f9;
+            font-size: 1em;
+            transition: var(--transition);
+        }
+
+        input:focus, select:focus {
+            border-color: #2ecc71;
+            background-color: white;
+            outline: none;
+            box-shadow: 0 0 10px rgba(46, 204, 113, 0.2);
+        }
+
+        .btn-add {
+            width: 100%;
+            padding: 15px;
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3);
+        }
+
+        .btn-add:hover {
+            box-shadow: 0 6px 20px rgba(46, 204, 113, 0.5);
+            filter: brightness(1.05);
+        }
+
+        /* Dashboard Panel Styling */
+        .dashboard-panel { display: flex; flex-direction: column; gap: 30px; }
+
+        /* Table Styling */
+        .table-container { overflow-x: auto; }
+        
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 10px;
+            margin-top: -10px;
+        }
+
+        th {
+            color: #7f8c8d;
+            font-weight: 500;
+            text-align: left;
+            padding: 15px;
+            font-size: 0.9em;
+            border-bottom: 1px solid #eee;
+        }
+
+        tbody tr {
+            background-color: #f9f9f9;
+            transition: var(--transition);
+        }
+
+        tbody tr:hover {
+            background-color: #eafaf1;
+            transform: scale(1.01);
+        }
+
+        td {
+            padding: 18px 15px;
+            border-top: 1px solid #eee;
+            border-bottom: 1px solid #eee;
+        }
+
+        tbody tr td:first-child { border-left: 1px solid #eee; border-top-left-radius: 12px; border-bottom-left-radius: 12px; font-weight: 500;}
+        tbody tr td:last-child { border-right: 1px solid #eee; border-top-right-radius: 12px; border-bottom-right-radius: 12px; text-align: right;}
+
+        /* Badges */
+        .badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        .bg-mangrove { background-color: #d4efdf; color: #1e8449; }
+        .bg-biasa { background-color: #e5e8e8; color: #616a6b; }
+
+        /* Delete Button */
+        .btn-delete {
+            background: none;
+            border: none;
+            color: #e74c3c;
+            cursor: pointer;
+            font-size: 1.1em;
+            opacity: 0.6;
+            transition: var(--transition);
+        }
+        .btn-delete:hover { opacity: 1; transform: scale(1.1); }
+
+        /* Total Summary Card */
+        .total-card {
+            background: var(--primary-gradient);
+            color: white;
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(39, 174, 96, 0.3);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .total-card h2 { margin: 0; font-size: 2.5em; font-weight: 700; }
+        .total-card p { margin: 5px 0 0; opacity: 0.9; font-size: 1.1em; }
+        .icon-large { font-size: 3em; margin-bottom: 15px; }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 50px;
+            color: #95a5a6;
+            border: 2px dashed #e0e0e0;
+            border-radius: 15px;
+            background-color: #fafafa;
+        }
+        .empty-state-icon { font-size: 4em; margin-bottom: 15px; display: block;}
+
+        /* Responsive adjustments */
+        @media (max-width: 576px) {
+            header h1 { font-size: 1.8em; }
+            .card { padding: 20px; }
+            td, th { padding: 10px 8px; font-size: 0.9em; }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<header>
+    <h1>🌱 Green-Step Dashboard</h1>
+    <p>Simulasi Digital Restorasi Hutan & Perhitungan Serapan Karbon</p>
+</header>
+
+<div class="main-container">
+    <div class="card input-panel">
+        <h3 class="card-title">📝 Tambah Objek Digital</h3>
+        
+        <div class="form-group">
+            <label for="namaPohon">Nama Pohon / ID</label>
+            <input type="text" id="namaPohon" placeholder="Contoh: Mangrove A-01">
+        </div>
+
+        <div class="form-group">
+            <label for="jenisPohon">Kategori Model</label>
+            <select id="jenisPohon">
+                <option value="biasa">🌳 Pohon Biasa (Model Standar)</option>
+                <option value="mangrove">🌊 Mangrove (Model Efisiensi 1.5x)</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="lajuSerap">Laju Serap Dasar (kg/tahun)</label>
+            <input type="number" id="lajuSerap" placeholder="Contoh: 28.5" min="0" step="0.1">
+        </div>
+
+        <button class="btn-add" onclick="tambahPohon()">⚡ Digitalisasikan ke Lahan</button>
+    </div>
+
+    <div class="dashboard-panel">
+        <div class="total-card">
+            <div class="icon-large">🌍</div>
+            <p>Total Estimasi Dampak Lahan (Prediksi 5 Tahun)</p>
+            <h2 id="totalEstimasi">0.00 kg CO₂</h2>
+        </div>
+
+        <div class="card">
+            <h3 class="card-title">📋 Inventarisasi Lahan Restorasi</h3>
+            
+            <div id="emptyState" class="empty-state">
+                <span class="empty-state-icon">🏜️</span>
+                Lahan masih kosong. <br>Gunakan panel di samping untuk mulai menanam pohon digital.
+            </div>
+
+            <div id="tableContainer" class="table-container" style="display: none;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nama Objek</th>
+                            <th>Tipe Model</th>
+                            <th>Laju (kg/thn)</th>
+                            <th>Prediksi (5 Thn)</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabelPohon">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // --- KONSEP PBO (Tetap Dipertahankan) ---
+    class Tanaman {
+        constructor(id, nama, laju) {
+            this.id = id; // Butuh ID unik untuk fitur hapus
+            this.nama = nama;
+            this.laju = parseFloat(laju);
+            this.tipe = "Biasa";
+        }
+        hitungSerapan(tahun) {
+            return this.laju * tahun;
+        }
+    }
+
+    class Mangrove extends Tanaman {
+        constructor(id, nama, laju) {
+            super(id, nama, laju);
+            this.tipe = "Mangrove";
+            this.bonus = 1.5; // Karakteristik unggul Mangrove
+        }
+        hitungSerapan(tahun) {
+            // Polimorfisme: Rumus berbeda untuk anak class
+            return (this.laju * tahun) * this.bonus;
+        }
+    }
+
+    // --- LOGIKA SISTEM DASHBOARD ---
+    let daftarLahan = [];
+
+    function tambahPohon() {
+        // Ambil elemen input
+        const namaInput = document.getElementById('namaPohon');
+        const jenisInput = document.getElementById('jenisPohon');
+        const lajuInput = document.getElementById('lajuSerap');
+
+        // Validasi input sederhana
+        if(!namaInput.value || !lajuInput.value || lajuInput.value <= 0) {
+            alert("⚠️ Mohon isi Nama Pohon dan Laju Serap dengan benar (angka positif)!");
+            return;
+        }
+
+        // Buat ID unik berdasarkan waktu
+        const uniqueId = Date.now();
+
+        // Terapkan PBO: Buat objek berdasarkan pilihan user
+        let pohonBaru;
+        if(jenisInput.value === "mangrove") {
+            pohonBaru = new Mangrove(uniqueId, namaInput.value, lajuInput.value);
+        } else {
+            pohonBaru = new Tanaman(uniqueId, namaInput.value, lajuInput.value);
+        }
+
+        // Masukkan objek ke dalam array (simulasi lahan)
+        daftarLahan.push(pohonBaru);
+        
+        // Perbarui tampilan visual
+        updateTampilan();
+        
+        // Reset form input agar bersih kembali
+        namaInput.value = "";
+        lajuInput.value = "";
+        namaInput.focus(); // Fokus kembali ke input nama
+    }
+
+    function hapusPohon(idYangDihapus) {
+        // Filter array untuk membuang pohon dengan ID tersebut
+        daftarLahan = daftarLahan.filter(pohon => pohon.id !== idYangDihapus);
+        updateTampilan();
+    }
+
+    function updateTampilan() {
+        const tabelBody = document.getElementById('tabelPohon');
+        const emptyState = document.getElementById('emptyState');
+        const tableContainer = document.getElementById('tableContainer');
+        const totalText = document.getElementById('totalEstimasi');
+
+        // Bersihkan isi tabel lama
+        tabelBody.innerHTML = "";
+        let totalLahan = 0;
+        const TAHUN_PREDIKSI = 5;
+
+        // Kontrol tampilan state (kosong atau berisi data)
+        if (daftarLahan.length === 0) {
+            emptyState.style.display = "block";
+            tableContainer.style.display = "none";
+            totalText.innerText = "0.00 kg CO₂";
+            return;
+        } else {
+            emptyState.style.display = "none";
+            tableContainer.style.display = "block";
+        }
+
+        // Iterasi array objek dan render ke baris tabel
+        daftarLahan.forEach(p => {
+            const hasilPrediksi = p.hitungSerapan(TAHUN_PREDIKSI);
+            totalLahan += hasilPrediksi;
+
+            // Tentukan ikon berdasarkan tipe
+            const icon = p.tipe === 'Mangrove' ? '🌊' : '🌳';
+
+            const row = `<tr>
+                <td><strong>${p.nama}</strong></td>
+                <td><span class="badge ${p.tipe === 'Mangrove' ? 'bg-mangrove' : 'bg-biasa'}">${icon} ${p.tipe}</span></td>
+                <td>${p.laju.toFixed(1)} kg</td>
+                <td><strong>${hasilPrediksi.toFixed(2)} kg</strong></td>
+                <td style="text-align: center;">
+                    <button class="btn-delete" onclick="hapusPohon(${p.id})" title="Hapus pohon ini">🗑️</button>
+                </td>
+            </tr>`;
+            
+            // Masukkan baris baru ke tabel (menggunakan insertAdjacentHTML agar event handler tidak hilang jika ada)
+            tabelBody.insertAdjacentHTML('beforeend', row);
+        });
+
+        // Update Kartu Total
+        totalText.innerText = `${totalLahan.toFixed(2)} kg CO₂`;
+    }
+</script>
+
+</body>
+</html>
